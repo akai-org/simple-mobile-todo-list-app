@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Akai todo list app</string>
+    <string name="add_task_label">Add task</string>
+    <string name="task_name">Task name</string>
+    <string name="task_date">Date of task</string>
+    <string name="add">Add</string>
 </resources>
