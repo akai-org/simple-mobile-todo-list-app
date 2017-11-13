@@ -1,0 +1,115 @@
+package akai.com.todolistapp;
+
+/**
+ * Created by Michal on 13.11.2017.
+ */
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+
+public class DBHelper extends SQLiteOpenHelper {
+
+    private static final int DATABASE_VERSION = 1;
+
+    private static final String DATABASE_NAME = "contactsManager";
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_DATE = "date";
+    private static final String KEY_BOOL = "bool";
+
+    private static final String TABLE_LIST = "list";
+
+    public DBHelper(Context context){
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db){
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_LIST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
+                + KEY_DATE + " TEXT," + KEY_BOOL + " INTEGER" + ")";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int a, int b)
+    {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIST);
+
+        // Create tables again
+        onCreate(db);
+    }
+
+    public void add(Task c){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, c.getTitle()); // Contact Name
+        values.put(KEY_DATE, c.getDate().toString());//contact.getPhoneNumber()); // Contact Phone Number
+        boolean x = c.getStatus();
+        if(x)
+            values.put(KEY_BOOL, 1);
+        else
+            values.put(KEY_BOOL, 0);
+        db.insert(TABLE_LIST, null, values);
+        db.close();
+    }
+
+    public Task get(int id) throws Exception {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_LIST, new String[] { KEY_ID,
+                        KEY_NAME, KEY_DATE, KEY_BOOL }, KEY_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Task C = new Task(cursor.getString(1), strToCal(cursor.getString(2)), strToBool(cursor.getString(3)));
+
+        return C;
+    }
+
+    private boolean strToBool(String s) {
+        if(s == "1")
+            return true;
+        else
+            return false;
+    }
+
+    private Calendar strToCal(String str) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        cal.setTime(sdf.parse(str));
+
+        return cal;
+    }
+
+    public List<Task> getAll() throws Exception{
+        List<Task> list = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_LIST;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
+                list.add(c);
+            } while (cursor.moveToNext());
+        }
+        return list;
+    }
+}
