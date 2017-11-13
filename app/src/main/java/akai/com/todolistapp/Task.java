@@ -26,7 +26,8 @@ public class Task {
         }
     }
 
-    public void setDate(Calendar date) {
+    public void setDate(Calendar date) throws Exception {
+        if (date == null) throw new Exception("Incorrect date");
         Calendar currentDate = Calendar.getInstance();
 
     }
@@ -47,8 +48,10 @@ public class Task {
         return this.status;
     }
 
-    Task(String title, Calendar date, Boolean status) {
-
+    Task(String title, Calendar date, Boolean status) throws Exception {
+        setTitle(title);
+        setDate(date);
+        setStatus(status);
     }
 
 }
