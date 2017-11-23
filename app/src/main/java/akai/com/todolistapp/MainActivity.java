@@ -1,12 +1,16 @@
 package akai.com.todolistapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+<<<<<<< HEAD
 import android.widget.Button;
 
 import java.util.Calendar;
 
+=======
+>>>>>>> origin/master
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,5 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private void write(Task c){
         DBHelper db = new DBHelper(this);
         db.add(c);
+    }
+
+    public void openAddTaskActivity(View view){
+        Intent intent = new Intent(this, AddTaskActivity.class);
+        startActivity(intent);
     }
 }
