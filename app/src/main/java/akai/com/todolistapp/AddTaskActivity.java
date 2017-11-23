@@ -30,6 +30,8 @@ public class AddTaskActivity extends AppCompatActivity {
                 calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                 try {
                     Task task = new Task(taskName, calendar, false);
+                    DBHelper dbHelper = new DBHelper(AddTaskActivity.this);
+                    dbHelper.add(task);
                 } catch(Exception ex) {
                     Toast.makeText(AddTaskActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }
