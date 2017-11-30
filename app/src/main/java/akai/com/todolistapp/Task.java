@@ -11,6 +11,7 @@ public class Task {
     private String title;
     private Calendar date;
     private Boolean status;
+    private Boolean priority = false;
 
     public void setTitle(String title) throws Exception{
         int titleLength = title.length();
@@ -28,12 +29,16 @@ public class Task {
 
     public void setDate(Calendar date) throws Exception {
         if (date == null) throw new Exception("Incorrect date");
-        Calendar currentDate = Calendar.getInstance();
+        this.date = date;
 
     }
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public void setPriority(Boolean priority) {
+        this.priority = priority;
     }
 
     public String getTitle() {
@@ -46,6 +51,10 @@ public class Task {
 
     public Boolean getStatus() {
         return this.status;
+    }
+
+    public Boolean getPriority() {
+        return this.priority;
     }
 
     Task(String title, Calendar date, Boolean status) throws Exception {

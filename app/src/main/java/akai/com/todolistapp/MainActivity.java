@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-<<<<<<< HEAD
 import android.widget.Button;
 
 import java.util.Calendar;
 
-=======
->>>>>>> origin/master
 
 public class MainActivity extends AppCompatActivity {
 

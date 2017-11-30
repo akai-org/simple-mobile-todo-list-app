@@ -28,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NAME = "name";
     private static final String KEY_DATE = "date";
     private static final String KEY_BOOL = "bool";
+    private static final String KEY_PRIORITY = "priority";
 
     private static final String TABLE_LIST = "list";
 
@@ -39,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_LIST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_DATE + " TEXT," + KEY_BOOL + " INTEGER" + ")";
+                + KEY_DATE + " TEXT," + KEY_BOOL + " INTEGER," + KEY_PRIORITY + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -63,6 +64,11 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(KEY_BOOL, 1);
         else
             values.put(KEY_BOOL, 0);
+        boolean pr = c.getPriority();
+        if(pr)
+            values.put(KEY_PRIORITY, 1);
+        else
+            values.put(KEY_PRIORITY, 0);
         db.insert(TABLE_LIST, null, values);
         db.close();
     }
@@ -71,18 +77,22 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_LIST, new String[] { KEY_ID,
-                        KEY_NAME, KEY_DATE, KEY_BOOL }, KEY_ID + "=?",
+                        KEY_NAME, KEY_DATE, KEY_BOOL, KEY_PRIORITY }, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
+        if (cursor != null) {
             cursor.moveToFirst();
 
-        Task C = new Task(cursor.getString(1), strToCal(cursor.getString(2)), strToBool(cursor.getString(3)));
-
-        return C;
+            Task C = new Task(cursor.getString(1), strToCal(cursor.getString(2)), strToBool(cursor.getString(3)));
+            cursor.close();
+            return C;
+        }
+        else {
+            throw new Exception("Incorrect id");
+        }
     }
 
     private boolean strToBool(String s) {
-        if(s == "1")
+        if(s.equals("1"))
             return true;
         else
             return false;
@@ -107,9 +117,11 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
+                c.setPriority(strToBool(cursor.getString(cursor.getColumnIndex(KEY_PRIORITY))));
                 list.add(c);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return list;
     }
 }
