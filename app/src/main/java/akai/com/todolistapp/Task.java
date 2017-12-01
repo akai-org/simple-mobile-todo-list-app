@@ -12,6 +12,7 @@ public class Task {
     private Calendar date;
     private Boolean status;
     private Boolean priority = false;
+    private int id = -1; //used to indentify tasks in database
 
     public void setTitle(String title) throws Exception{
         int titleLength = title.length();
@@ -41,6 +42,10 @@ public class Task {
         this.priority = priority;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return this.title;
     }
@@ -55,6 +60,10 @@ public class Task {
 
     public Boolean getPriority() {
         return this.priority;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     Task(String title, Calendar date, Boolean status) throws Exception {

@@ -73,6 +73,21 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void update(Task updatedTask) throws Exception {
+        int id = updatedTask.getId();
+        if(id==-1) {
+            throw new Exception("Incorrect id");
+        }
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, updatedTask.getTitle());
+        values.put(KEY_DATE, updatedTask.getDate().toString());
+        values.put(KEY_BOOL, updatedTask.getStatus() ? 1 : 0);
+        values.put(KEY_PRIORITY, updatedTask.getPriority() ? 1 : 0);
+        db.update(TABLE_LIST, values, KEY_ID + "=?", new String[]{Integer.toString(id)});
+        db.close();
+    }
+
     public Task get(int id) throws Exception {
         SQLiteDatabase db = this.getReadableDatabase();
 
