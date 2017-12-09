@@ -98,6 +98,8 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
             Task C = new Task(cursor.getString(1), strToCal(cursor.getString(2)), strToBool(cursor.getString(3)));
+            C.setPriority(strToBool(cursor.getString(4)));
+            C.setId(cursor.getInt(0));
             cursor.close();
             return C;
         }
@@ -133,6 +135,7 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
                 c.setPriority(strToBool(cursor.getString(cursor.getColumnIndex(KEY_PRIORITY))));
+                c.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
                 list.add(c);
             } while (cursor.moveToNext());
         }
