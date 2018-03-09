@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button saveButton;
     private Button writeButton;
+    private Button recButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
                 read();
             }
         });
+
+        recButton = findViewById(R.id.button3);
+        //recButton.setOnClickListener((v) -> {});
     }
 
     private Task read(){
@@ -50,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void openAddTaskActivity(View view){
         Intent intent = new Intent(this, AddTaskActivity.class);
+        startActivity(intent);
+    }
+
+    public void openRecyclerView(View view){
+        Intent intent = new Intent(this, RecyclerViewBackground.class);
         startActivity(intent);
     }
 }
