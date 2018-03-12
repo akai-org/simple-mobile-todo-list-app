@@ -2,6 +2,8 @@ package akai.com.todolistapp;
 
 /**
  * Created by Wojtek
+ *
+ * This class is responsible for data preparation
  */
 
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +14,6 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-private String[] mDataset;
 private List<Task> ListDataset;
 
 // Provide a reference to the views for each data item
@@ -21,16 +22,12 @@ private List<Task> ListDataset;
 public static class ViewHolder extends RecyclerView.ViewHolder {
     // each data item is just a string in this case
     public TextView mTextView;
+
     public ViewHolder(TextView v) {
         super(v);
         mTextView = v;
     }
 }
-
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(String[] myDataset) {
-        mDataset = myDataset;
-    }
 
 
     public MyAdapter(List<Task> myDataset) {
@@ -51,13 +48,13 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(mDataset[position]);
+        holder.mTextView.setText(ListDataset.get(position).getTitle());
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return ListDataset.size();
     }
 }

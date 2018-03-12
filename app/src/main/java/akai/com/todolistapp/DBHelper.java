@@ -142,4 +142,11 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         return list;
     }
+
+    public String[] getAllStrings() throws Exception{
+        //TODO
+        String[] list = new String[5];
+
+        return list;
+    }
 }

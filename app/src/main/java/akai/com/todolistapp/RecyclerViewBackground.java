@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,6 +13,8 @@ import java.util.List;
 
 /**
  * Created by Wojtek
+ *
+ * This class is responsible for RecyclerView Activity
  */
 
 public class RecyclerViewBackground extends AppCompatActivity{
@@ -40,6 +43,7 @@ public class RecyclerViewBackground extends AppCompatActivity{
         } catch (Exception e){
             //TODO
             //I know, not very wise
+            Log.d("ADAPTER", "Exception catched" + e.getMessage() + " " + e.getCause());
             finishActivity(0);
         }
         //mAdapter = new MyAdapter(dbhelper.getAll());
