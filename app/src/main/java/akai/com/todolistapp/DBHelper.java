@@ -89,6 +89,23 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void delete(Task task) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_LIST, KEY_ID + "=?", new String[]{Integer.toString(task.getId())});
+        db.close();
+    }
+
+    public void delete(List<Task> tasks) {
+        SQLiteDatabase db = getWritableDatabase();
+        StringBuilder where = new StringBuilder(KEY_ID + " IN (");
+        for(Task t : tasks) {
+            where.append(t.getId()).append(", ");
+        }
+        where.replace(where.length()-2, where.length(), ")");
+        db.delete(TABLE_LIST, where.toString(), null);
+        db.close();
+    }
+
     public Task get(int id) throws Exception {
         SQLiteDatabase db = this.getReadableDatabase();
 
