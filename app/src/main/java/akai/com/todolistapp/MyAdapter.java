@@ -8,9 +8,11 @@ package akai.com.todolistapp;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -23,10 +25,13 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
     // each data item is just a string in this case
     public TextView mTextView;
     public TextView date;
+    public View mView;
 
-    public ViewHolder(TextView v) {
+    public ViewHolder(View v) {
         super(v);
-        mTextView = v;
+        mView = v;
+        mTextView = mView.findViewById(R.id.Rec_View_text1);
+        date = mView.findViewById(R.id.Rec_View_date);
     }
 }
 
@@ -39,8 +44,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
-        //RecyclerView v = (RecyclerView) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_task_view, parent, false);
+        View v =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -51,6 +55,9 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.mTextView.setText(ListDataset.get(position).getTitle());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        holder.date.setText(sdf.format(ListDataset.get(position).getDate().getTime()));
 
     }
 
