@@ -1,5 +1,6 @@
 package akai.com.todolistapp;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -7,12 +8,12 @@ import java.util.*;
  * Created by Klaudia on 13-Nov-17.
  */
 
-public class Task {
+public class Task implements Serializable {
     private String title;
     private Calendar date;
     private Boolean status;
     private Boolean priority = false;
-    private int id = -1; //used to indentify tasks in database
+    private int id = -1; //used to identify tasks in database
 
     public void setTitle(String title) throws Exception{
         int titleLength = title.length();

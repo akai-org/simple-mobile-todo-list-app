@@ -15,7 +15,7 @@ import java.util.Calendar;
 
 public class AddTaskActivity extends AppCompatActivity {
 
-    public static final String ID = "id"; //used to pass id of task in intent
+    public static final String TASK = "task"; //used to pass tasks in intent
 
     private EditText nameEditText;
     private DatePicker datePicker;
@@ -34,10 +34,9 @@ public class AddTaskActivity extends AppCompatActivity {
         priorityCheckBox = (CheckBox) findViewById(R.id.priorityCheckBox);
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra(ID, -1);
-        if(id!=-1) {
-            GetTask getTask = new GetTask();
-            getTask.execute(id);
+        taskToEdit = (Task) intent.getSerializableExtra(TASK);
+        if(taskToEdit != null) {
+            fillWithDataToEdit();
         }
 
         Button addButton = (Button) findViewById(R.id.addButton);
@@ -61,6 +60,13 @@ public class AddTaskActivity extends AppCompatActivity {
         });
     }
 
+    private void fillWithDataToEdit() {
+        nameEditText.setText(taskToEdit.getTitle());
+        priorityCheckBox.setChecked(taskToEdit.getPriority());
+        Calendar calendar = taskToEdit.getDate();
+        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
     private void addTask() {
         String taskName = nameEditText.getText().toString();
         Calendar calendar = Calendar.getInstance();
@@ -72,6 +78,9 @@ public class AddTaskActivity extends AppCompatActivity {
             }
             SaveTask saveTask = new SaveTask(INSERT);
             saveTask.execute(task);
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(TASK, task);
+            setResult(RESULT_OK, returnIntent);
             finish();
         } catch(Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -87,33 +96,12 @@ public class AddTaskActivity extends AppCompatActivity {
             taskToEdit.setDate(calendar);
             SaveTask saveTask = new SaveTask(UPDATE);
             saveTask.execute(taskToEdit);
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(TASK, taskToEdit);
+            setResult(RESULT_OK, returnIntent);
             finish();
         } catch (Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private class GetTask extends AsyncTask<Integer, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... id) {
-            DBHelper dbHelper = new DBHelper(AddTaskActivity.this);
-            try {
-                taskToEdit = dbHelper.get(id[0]);
-            } catch(Exception ex) {
-                ex.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if(result) {
-                nameEditText.setText(taskToEdit.getTitle());
-                priorityCheckBox.setChecked(taskToEdit.getPriority());
-                Calendar calendar = taskToEdit.getDate();
-                datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            }
         }
     }
 
