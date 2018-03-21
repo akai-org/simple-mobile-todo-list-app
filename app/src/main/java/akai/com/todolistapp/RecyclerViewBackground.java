@@ -46,7 +46,6 @@ public class RecyclerViewBackground extends AppCompatActivity{
             Log.d("ADAPTER", "Exception catched" + e.getMessage() + " " + e.getCause());
             finishActivity(0);
         }
-        //mAdapter = new MyAdapter(dbhelper.getAll());
         mRecyclerView.setAdapter(mAdapter);
     }
 }

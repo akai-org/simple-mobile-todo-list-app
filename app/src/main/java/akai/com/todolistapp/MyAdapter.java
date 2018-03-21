@@ -22,6 +22,7 @@ private List<Task> ListDataset;
 public static class ViewHolder extends RecyclerView.ViewHolder {
     // each data item is just a string in this case
     public TextView mTextView;
+    public TextView date;
 
     public ViewHolder(TextView v) {
         super(v);
@@ -38,7 +39,8 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_task_view, parent, false);
+        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
+        //RecyclerView v = (RecyclerView) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_task_view, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
