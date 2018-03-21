@@ -148,7 +148,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Task> getAll() throws Exception{
         List<Task> list = new ArrayList<>();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_LIST;
+        String selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_PRIORITY + " DESC, " + KEY_DATE;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -162,6 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 list.add(c);
             } while (cursor.moveToNext());
         }
+        db.close();
         cursor.close();
         return list;
     }
