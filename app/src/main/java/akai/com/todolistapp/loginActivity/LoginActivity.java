@@ -79,7 +79,9 @@ public class LoginActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-        if (cancel) {
+        //TODO basic verification
+
+        if (cancel) { //
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
