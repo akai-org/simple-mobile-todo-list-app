@@ -127,10 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private boolean strToBool(String s) {
-        if(s.equals("1"))
-            return true;
-        else
-            return false;
+        return s.equals("1");
     }
 
     private String calToStr(Calendar cal) {
