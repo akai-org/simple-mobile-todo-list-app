@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
     // each data item is just a string in this case
     public TextView mTextView;
     public TextView date;
+    public CheckBox mStar;
     public View mView;
 
     public ViewHolder(View v) {
@@ -32,6 +34,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
         mView = v;
         mTextView = mView.findViewById(R.id.Rec_View_text1);
         date = mView.findViewById(R.id.Rec_View_date);
+        mStar = mView.findViewById(R.id.priorityStar);
     }
 }
 
@@ -58,6 +61,8 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         holder.date.setText(sdf.format(ListDataset.get(position).getDate().getTime()));
+
+        holder.mStar.setChecked(ListDataset.get(position).getPriority());
 
     }
 
