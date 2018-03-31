@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,8 +58,8 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, c.getTitle()); // Contact Name
-        values.put(KEY_DATE, c.getDate().toString());//contact.getPhoneNumber()); // Contact Phone Number
+        values.put(KEY_NAME, c.getTitle());
+        values.put(KEY_DATE, calToStr(c.getDate()));
         boolean x = c.getStatus();
         if(x)
             values.put(KEY_BOOL, 1);
@@ -81,7 +82,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, updatedTask.getTitle());
-        values.put(KEY_DATE, updatedTask.getDate().toString());
+        values.put(KEY_DATE, calToStr(updatedTask.getDate()));
         values.put(KEY_BOOL, updatedTask.getStatus() ? 1 : 0);
         values.put(KEY_PRIORITY, updatedTask.getPriority() ? 1 : 0);
         db.update(TABLE_LIST, values, KEY_ID + "=?", new String[]{Integer.toString(id)});
@@ -132,31 +133,44 @@ public class DBHelper extends SQLiteOpenHelper {
             return false;
     }
 
-    private Calendar strToCal(String str) throws ParseException {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-        cal.setTime(sdf.parse(str));
+    private String calToStr(Calendar cal) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(cal.getTime());
+    }
 
+    private Calendar strToCal(String str) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sdf.parse(str));
         return cal;
     }
 
     public List<Task> getAll() throws Exception{
         List<Task> list = new ArrayList<>();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_LIST;
+        String selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_PRIORITY + " DESC, " + KEY_DATE;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
+                Log.d("DBhelper",cursor.getString(2));
                 Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
                 c.setPriority(strToBool(cursor.getString(cursor.getColumnIndex(KEY_PRIORITY))));
                 c.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
                 list.add(c);
             } while (cursor.moveToNext());
         }
+        db.close();
         cursor.close();
+        return list;
+    }
+
+    public String[] getAllStrings() throws Exception{
+        //TODO
+        String[] list = new String[5];
+
         return list;
     }
 }

@@ -19,6 +19,9 @@
         <activity android:name=".AddTaskActivity"
             android:label="@string/add_task_label">
         </activity>
+        <activity android:name=".RecyclerViewBackground"
+            android:label="Recycler View">
+        </activity>
     </application>
 
 </manifest>
