@@ -54,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void add(Task c){
+    public int add(Task c){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -71,7 +71,13 @@ public class DBHelper extends SQLiteOpenHelper {
         else
             values.put(KEY_PRIORITY, 0);
         db.insert(TABLE_LIST, null, values);
+        String query = "SELECT MAX(" + KEY_ID + ") FROM " + TABLE_LIST;
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+        cursor.close();
         db.close();
+        return id;
     }
 
     public void update(Task updatedTask) throws Exception {

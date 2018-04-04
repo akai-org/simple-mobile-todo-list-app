@@ -78,10 +78,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
             SaveTask saveTask = new SaveTask(INSERT);
             saveTask.execute(task);
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra(TASK, task);
-            setResult(RESULT_OK, returnIntent);
-            finish();
         } catch(Exception ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -105,7 +101,7 @@ public class AddTaskActivity extends AppCompatActivity {
         }
     }
 
-    private class SaveTask extends AsyncTask<Task, Void, Boolean> {
+    private class SaveTask extends AsyncTask<Task, Void, Task> {
         private int action;
 
         SaveTask(int action) {
@@ -113,28 +109,35 @@ public class AddTaskActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Task... params){
+        protected Task doInBackground(Task... params){
             DBHelper dbHelper = new DBHelper(AddTaskActivity.this);
             switch (action) {
                 case INSERT:
-                    dbHelper.add(params[0]);
-                    return true;
+                    int id = dbHelper.add(params[0]);
+                    params[0].setId(id);
+                    return params[0];
                 case UPDATE:
                     try {
                         dbHelper.update(params[0]);
-                        return true;
+                        return params[0];
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        return false;
+                        return null;
                     }
             }
-            return false;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            if(result) {
+        protected void onPostExecute(Task result) {
+            if(result != null) {
                 Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                if(action == INSERT) {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(TASK, result);
+                    setResult(RESULT_OK, returnIntent);
+                    finish();
+                }
             }
         }
     }

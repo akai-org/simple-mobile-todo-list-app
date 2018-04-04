@@ -7,4 +7,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="ok">OK</string>
+    <string name="delete_task_message">Selected task will be deleted.</string>
 </resources>
