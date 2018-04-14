@@ -6,6 +6,7 @@ package akai.com.todolistapp;
  * This class is responsible for data preparation
  */
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+    private Context context;
     private List<Task> ListDataset;
 
     private boolean multiSelect = false;
@@ -50,7 +52,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
 
-    public MyAdapter(List<Task> myDataset) {
+    public MyAdapter(Context context, List<Task> myDataset) {
+        this.context = context;
         ListDataset = myDataset;
     }
 
@@ -87,11 +90,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         holder.date.setText(sdf.format(ListDataset.get(position).getDate().getTime()));
+        int daysToDeadline = ListDataset.get(position).daysToDeadline();
+        if(daysToDeadline > 0) {
+            holder.mTextView.setTextColor(context.getColor(R.color.colorNormalTask));
+            holder.date.setTextColor(context.getColor(R.color.colorNormalTask));
+        }
+        else if(daysToDeadline == 0) {
+            holder.mTextView.setTextColor(context.getColor(R.color.colorNearTask));
+            holder.date.setTextColor(context.getColor(R.color.colorNearTask));
+        }
+        else {
+            holder.mTextView.setTextColor(context.getColor(R.color.colorExpiredTask));
+            holder.date.setTextColor(context.getColor(R.color.colorExpiredTask));
+        }
 
         holder.mStar.setChecked(ListDataset.get(position).getPriority());
 
         if((multiSelect && selectedItems.contains(ListDataset.get(position))) || selectedPosition == position) {
-            holder.mView.setBackgroundColor(Color.GRAY);
+            holder.mView.setBackgroundColor(context.getColor(R.color.colorSelectedTask));
         }
         else {
             holder.mView.setBackgroundColor(Color.WHITE);
@@ -108,7 +124,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     }
                     else {
                         selectedItems.add(clickedTask);
-                        view.setBackgroundColor(Color.GRAY);
+                        view.setBackgroundColor(context.getColor(R.color.colorSelectedTask));
                     }
                 }
             }
@@ -119,7 +135,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 @Override
                 public boolean onLongClick(View view) {
                     if(selectedPosition == -1) {
-                        view.setBackgroundColor(Color.GRAY);
+                        view.setBackgroundColor(context.getColor(R.color.colorSelectedTask));
                         setSelectedPosition(holder.getAdapterPosition());
                         onLongClickListener.onClick(holder.getAdapterPosition());
                     }

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -69,8 +70,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private void addTask() {
         String taskName = nameEditText.getText().toString();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
         try {
             Task task = new Task(taskName, calendar, false);
             if(priorityCheckBox.isChecked()) {
@@ -87,8 +87,7 @@ public class AddTaskActivity extends AppCompatActivity {
         try {
             taskToEdit.setTitle(nameEditText.getText().toString());
             taskToEdit.setPriority(priorityCheckBox.isChecked());
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+            Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
             taskToEdit.setDate(calendar);
             SaveTask saveTask = new SaveTask(UPDATE);
             saveTask.execute(taskToEdit);

@@ -105,7 +105,7 @@ public class RecyclerViewBackground extends AppCompatActivity{
         DBHelper dbhelper = new DBHelper(RecyclerViewBackground.this);
         try {
             tasks = dbhelper.getAll();
-            mAdapter = new MyAdapter(tasks);
+            mAdapter = new MyAdapter(this, tasks);
         } catch (Exception e){
             //TODO
             //I know, not very wise
