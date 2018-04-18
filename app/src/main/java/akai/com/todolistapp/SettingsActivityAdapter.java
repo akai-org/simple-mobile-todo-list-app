@@ -9,52 +9,116 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SettingsActivityAdapter extends RecyclerView.Adapter<SettingsActivityAdapter.ViewHolder> {
-    private List<SettingsSection> ListDataset;
+public class SettingsActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    // Provide a reference to the views for each data item
-// Complex data items may need more than one view per item, and
-// you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public TextView mTextView;;
+    private List<Object> myList;
+    private final int SECTION = 0, ELEMENT = 1;
+
+    public class ViewHolder1 extends RecyclerView.ViewHolder {
+        public TextView mTextView;
         public View mView;
-        //public RecyclerView mRecycler;
 
-        public ViewHolder(View v) {
+        public ViewHolder1(View v) {
+            super(v);
+            mView = v;
+            mTextView = mView.findViewById(R.id.Settings_Element_View_text1);
+        }
+    }
+
+    public class ViewHolder2 extends RecyclerView.ViewHolder {
+        public TextView mTextView;
+        public View mView;
+
+        public ViewHolder2(View v) {
             super(v);
             mView = v;
             mTextView = mView.findViewById(R.id.Settings_Section_View_text1);
-            //mRecycler = mView.findViewById(R.id.settings_section_recycler_view);
         }
     }
 
 
-    public SettingsActivityAdapter(List<SettingsSection> myDataset) {
-        ListDataset = myDataset;
+    public SettingsActivityAdapter(List<Object> myDataset) {
+        myList = myDataset;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (myList.get(position) instanceof SettingsElement) {
+            return ELEMENT;
+        } else if (myList.get(position) instanceof String) {
+            return SECTION;
+        }
+        return -1;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public SettingsActivityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
-        View v =  LayoutInflater.from(parent.getContext()).inflate(R.layout.settings_section_layout, parent, false);
-        SettingsActivityAdapter.ViewHolder vh = new SettingsActivityAdapter.ViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch(viewType){
+            case ELEMENT:
+                View v1 = inflater.inflate(R.layout.settings_element_layout, parent, false);
+                vh = new ViewHolder1(v1);
+                break;
+            case SECTION:
+                View v2 = inflater.inflate(R.layout.settings_section_layout, parent, false);
+                vh = new ViewHolder2(v2);
+                break;
+            default:
+                View v = inflater.inflate(R.layout.settings_element_layout, parent, false);
+                vh = new ViewHolder1(v);
+                break;
+        }
+
         return vh;
+    }
+
+    private void configureViewHolder1(ViewHolder1 vh1, int position) {
+        final SettingsElement element = (SettingsElement) myList.get(position);
+        if (element != null) {
+            vh1.mTextView.setText(element.getName());
+            vh1.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    element.start();
+                }
+            });
+        }
+    }
+
+    private void configureViewHolder2(ViewHolder2 vh2, int position) {
+        String section = (String) myList.get(position);
+        if (section != null) {
+            vh2.mTextView.setText(section);
+        }
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(SettingsActivityAdapter.ViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.mTextView.setText(ListDataset.get(position).getSectionName());
-
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Log.d("VH", String.valueOf(position));
+        Log.d("VH", String.valueOf(holder.getItemViewType()));
+        switch (holder.getItemViewType()) {
+            case ELEMENT:
+                ViewHolder1 vh1 = (ViewHolder1) holder;
+                configureViewHolder1(vh1, position);
+                break;
+            case SECTION:
+                ViewHolder2 vh2 = (ViewHolder2) holder;
+                configureViewHolder2(vh2, position);
+                break;
+            default:
+                ViewHolder1 vh = (ViewHolder1) holder;
+                configureViewHolder1(vh, position);
+                break;
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return ListDataset.size();
+        return this.myList.size();
     }
 }

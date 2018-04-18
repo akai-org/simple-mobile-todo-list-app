@@ -13,27 +13,24 @@ public class SettingsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<SettingsSection> mListSections = new ArrayList<>();
 
+    //here we add elements
+    private ArrayList<Object> getItemsList(){
+        ArrayList<Object> myList = new ArrayList<>();
+        myList.add("Test Section 1");
+        myList.add(new TrialOption());
+        myList.add(new TrialOption());
+        myList.add("Test Section 2");
+        myList.add(new TrialOption());
+
+        return myList;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_main);
         mRecyclerView = findViewById(R.id.settings_main_recycler_view);
-
-        //here we add new options
-        List<SettingsElement> testElements = new ArrayList<>();
-        testElements.add(new TrialOption());
-        testElements.add(new TrialOption());
-        SettingsSection testSection = new SettingsSection("test",testElements);
-        mListSections.add(testSection);
-
-        List<SettingsElement> testElements2 = new ArrayList<>();
-        testElements2.add(new TrialOption());
-        SettingsSection testSection2 = new SettingsSection("test2",testElements2);
-        mListSections.add(testSection2);
-
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -45,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         try {
-            mAdapter = new SettingsActivityAdapter(mListSections);
+            mAdapter = new SettingsActivityAdapter(getItemsList());
         } catch (Exception e){
             Log.d("SETTINGS_SECTION", "Exception catched" + e.getMessage() + " " + e.getCause());
             finishActivity(0);
