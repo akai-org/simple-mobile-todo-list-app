@@ -8,6 +8,7 @@ package akai.com.todolistapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,9 +37,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView mTextView;
         public TextView date;
         public CheckBox mStar;
-        public View mView;
+        public CardView mView;
 
-        public ViewHolder(View v) {
+        public ViewHolder(CardView v) {
             super(v);
             mView = v;
             mTextView = mView.findViewById(R.id.Rec_View_text1);
@@ -76,7 +77,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        View v =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
+        CardView v = (CardView)  LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -107,10 +108,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.mStar.setChecked(ListDataset.get(position).getPriority());
 
         if((multiSelect && selectedItems.contains(ListDataset.get(position))) || selectedPosition == position) {
-            holder.mView.setBackgroundColor(context.getColor(R.color.colorSelectedTask));
+            holder.mView.setCardBackgroundColor(context.getColor(R.color.colorSelectedTask));
         }
         else {
-            holder.mView.setBackgroundColor(Color.WHITE);
+            holder.mView.setCardBackgroundColor(Color.WHITE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +121,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 if(multiSelect) {
                     if(selectedItems.contains(clickedTask)) {
                         selectedItems.remove(clickedTask);
-                        view.setBackgroundColor(Color.WHITE);
+                        ((CardView) view).setCardBackgroundColor(Color.WHITE);
                     }
                     else {
                         selectedItems.add(clickedTask);
-                        view.setBackgroundColor(context.getColor(R.color.colorSelectedTask));
+                        ((CardView) view).setCardBackgroundColor(context.getColor(R.color.colorSelectedTask));
                     }
                 }
             }
@@ -135,7 +136,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 @Override
                 public boolean onLongClick(View view) {
                     if(selectedPosition == -1) {
-                        view.setBackgroundColor(context.getColor(R.color.colorSelectedTask));
+                        ((CardView) view).setCardBackgroundColor(context.getColor(R.color.colorSelectedTask));
                         setSelectedPosition(holder.getAdapterPosition());
                         onLongClickListener.onClick(holder.getAdapterPosition());
                     }
