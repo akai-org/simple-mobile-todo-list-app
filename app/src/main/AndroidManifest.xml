@@ -22,6 +22,9 @@
         <activity android:name=".RecyclerViewBackground"
             android:label="Recycler View">
         </activity>
+        <activity android:name=".SettingsActivity"
+            android:label="Settings">
+        </activity>
     </application>
 
 </manifest>
