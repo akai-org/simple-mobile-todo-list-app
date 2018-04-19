@@ -23,11 +23,11 @@ public class SettingsActivity extends AppCompatActivity {
     private ArrayList<Object> getItemsList(){
         ArrayList<Object> myList = new ArrayList<>();
         myList.add("Test Section 1");
-        myList.add(new TrialOption());
-        myList.add(new TrialOption());
+        myList.add(new TrialOption(SettingsActivity.this));
+        myList.add(new TrialOption(SettingsActivity.this));
         myList.add("Test Section 2");
-        myList.add(new TrialOption());
-        myList.add(new SettingsDatabaseSort(SettingsActivity.this));
+        myList.add(new TrialOption(SettingsActivity.this));
+        myList.add(new SettingsDatabaseSort(SettingsActivity.this,this));
 
         return myList;
     }
