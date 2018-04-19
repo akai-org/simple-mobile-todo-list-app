@@ -33,6 +33,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_LIST = "list";
 
+    private static int sortmode = 0;
+
+    public int getSortmode() {
+        return sortmode;
+    }
+
+    public void setSortmodeDate() {
+        DBHelper.sortmode = 1;
+    }
+
+    public void setSortmodeKey() {
+        DBHelper.sortmode = 0;
+    }
+
     public DBHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -149,13 +163,20 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Task> list = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_PRIORITY + " DESC, " + KEY_DATE;
+        String selectQuery2 = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_DATE;
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor;
+        //Log.d("DBHelper",String.valueOf(DBHelper.sortmode));
+        if(DBHelper.sortmode == 0){
+            cursor = db.rawQuery(selectQuery, null);
+        } else{
+            cursor = db.rawQuery(selectQuery2, null);
+        }
 
         if (cursor.moveToFirst()) {
             do {
-                Log.d("DBhelper",cursor.getString(2));
+                //Log.d("DBhelper",cursor.getString(2));
                 Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
                 c.setPriority(strToBool(cursor.getString(cursor.getColumnIndex(KEY_PRIORITY))));
                 c.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));

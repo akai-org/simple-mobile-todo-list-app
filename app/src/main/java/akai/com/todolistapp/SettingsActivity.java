@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -15,6 +14,12 @@ public class SettingsActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     //here we add elements
+    //sections as String
+    //Elements as new objects - instances of SettingsElement class
+    //you need to overwrite constructor to change name displayed in recycler
+    //start() method is executed in onClick so you need to overwrite it to execute
+    //your settings function
+    //Example below
     private ArrayList<Object> getItemsList(){
         ArrayList<Object> myList = new ArrayList<>();
         myList.add("Test Section 1");
@@ -22,6 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         myList.add(new TrialOption());
         myList.add("Test Section 2");
         myList.add(new TrialOption());
+        myList.add(new SettingsDatabaseSort(SettingsActivity.this));
 
         return myList;
     }

@@ -1,7 +1,6 @@
 package akai.com.todolistapp;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ public class SettingsActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<Object> myList;
     private final int SECTION = 0, ELEMENT = 1;
 
+    //viewholder 1 responsible for elements
     public class ViewHolder1 extends RecyclerView.ViewHolder {
         public TextView mTextView;
         public View mView;
@@ -25,6 +25,7 @@ public class SettingsActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    //viewholder 2 responsible for section names
     public class ViewHolder2 extends RecyclerView.ViewHolder {
         public TextView mTextView;
         public View mView;
@@ -36,11 +37,11 @@ public class SettingsActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-
     public SettingsActivityAdapter(List<Object> myDataset) {
         myList = myDataset;
     }
 
+    //checks element type and returns proper number
     @Override
     public int getItemViewType(int position) {
         if (myList.get(position) instanceof SettingsElement) {
@@ -98,8 +99,6 @@ public class SettingsActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d("VH", String.valueOf(position));
-        Log.d("VH", String.valueOf(holder.getItemViewType()));
         switch (holder.getItemViewType()) {
             case ELEMENT:
                 ViewHolder1 vh1 = (ViewHolder1) holder;
