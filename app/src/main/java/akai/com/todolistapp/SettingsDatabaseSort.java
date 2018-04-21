@@ -22,7 +22,7 @@ public class SettingsDatabaseSort extends SettingsElement {
             dbHelper.setSortmodeDate();
             this.setName("Sort by priority");
         } else {
-            dbHelper.setSortmodeKey();
+            dbHelper.setSortmodePriority();
             this.setName("Sort by date");
         }
         this.refreshActivity();

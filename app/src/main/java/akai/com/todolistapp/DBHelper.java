@@ -35,16 +35,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static int sortmode = 0;
 
+    private static final int SORT_PRIORITY = 0, SORT_DATE = 1;
+
     public int getSortmode() {
         return sortmode;
     }
 
     public void setSortmodeDate() {
-        DBHelper.sortmode = 1;
+        DBHelper.sortmode = SORT_DATE;
     }
 
-    public void setSortmodeKey() {
-        DBHelper.sortmode = 0;
+    public void setSortmodePriority() {
+        DBHelper.sortmode = SORT_PRIORITY;
     }
 
     public DBHelper(Context context){
@@ -162,21 +164,27 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Task> getAll() throws Exception{
         List<Task> list = new ArrayList<>();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_PRIORITY + " DESC, " + KEY_DATE;
-        String selectQuery2 = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_DATE;
+        String selectQuery;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor;
-        //Log.d("DBHelper",String.valueOf(DBHelper.sortmode));
-        if(DBHelper.sortmode == 0){
-            cursor = db.rawQuery(selectQuery, null);
-        } else{
-            cursor = db.rawQuery(selectQuery2, null);
+
+        switch (DBHelper.sortmode) {
+            case SORT_PRIORITY:
+                selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_PRIORITY + " DESC, " + KEY_DATE;
+                break;
+            case SORT_DATE:
+                selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_DATE;
+                break;
+            default:
+                selectQuery = "SELECT  * FROM " + TABLE_LIST + " ORDER BY " + KEY_PRIORITY + " DESC, " + KEY_DATE;
+                break;
         }
+
+        cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
-                //Log.d("DBhelper",cursor.getString(2));
                 Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
                 c.setPriority(strToBool(cursor.getString(cursor.getColumnIndex(KEY_PRIORITY))));
                 c.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
