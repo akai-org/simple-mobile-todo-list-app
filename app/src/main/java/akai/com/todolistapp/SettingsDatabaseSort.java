@@ -6,13 +6,9 @@ import android.content.Intent;
 
 public class SettingsDatabaseSort extends SettingsElement {
 
-    private Activity fa;
-
-    SettingsDatabaseSort(Context context, Activity fa){
-        super(context);
-        this.fa = fa;
-        this.context = context;
-        DBHelper dbHelper = new DBHelper(context);
+    SettingsDatabaseSort(Context context, Activity activity){
+        super(context,activity);
+        DBHelper dbHelper = new DBHelper(this.getContext());
         if(dbHelper.getSortmode() == 0){
             this.setName("Sort by date");
         } else {
@@ -21,7 +17,7 @@ public class SettingsDatabaseSort extends SettingsElement {
     }
 
     public void start(){
-        DBHelper dbHelper = new DBHelper(context);
+        DBHelper dbHelper = new DBHelper(this.getContext());
         if(dbHelper.getSortmode() == 0){
             dbHelper.setSortmodeDate();
             this.setName("Sort by priority");
@@ -29,9 +25,6 @@ public class SettingsDatabaseSort extends SettingsElement {
             dbHelper.setSortmodeKey();
             this.setName("Sort by date");
         }
-        Intent refresh = new Intent(this.context, SettingsActivity.class);
-        this.context.startActivity(refresh);
-        this.fa.finish();
-        //TODO refreshing - how to run finish() properly?
+        this.refreshActivity();
     }
 }
