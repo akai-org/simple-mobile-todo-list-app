@@ -17,26 +17,26 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-private List<Task> ListDataset;
+    private List<Task> ListDataset;
 
-// Provide a reference to the views for each data item
+    // Provide a reference to the views for each data item
 // Complex data items may need more than one view per item, and
 // you provide access to all the views for a data item in a view holder
-public static class ViewHolder extends RecyclerView.ViewHolder {
-    // each data item is just a string in this case
-    public TextView mTextView;
-    public TextView date;
-    public CheckBox mStar;
-    public View mView;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public TextView mTextView;
+        public TextView date;
+        public CheckBox mStar;
+        public View mView;
 
-    public ViewHolder(View v) {
-        super(v);
-        mView = v;
-        mTextView = mView.findViewById(R.id.Rec_View_text1);
-        date = mView.findViewById(R.id.Rec_View_date);
-        mStar = mView.findViewById(R.id.priorityStar);
+        public ViewHolder(View v) {
+            super(v);
+            mView = v;
+            mTextView = mView.findViewById(R.id.Rec_View_text1);
+            date = mView.findViewById(R.id.Rec_View_date);
+            mStar = mView.findViewById(R.id.priorityStar);
+        }
     }
-}
 
 
     public MyAdapter(List<Task> myDataset) {
@@ -47,7 +47,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        View v =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_layout, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }

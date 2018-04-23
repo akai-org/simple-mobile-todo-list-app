@@ -5,28 +5,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
-/**
- * Created by Wojtek
- *
- * This class is responsible for RecyclerView Activity
- */
-
-public class RecyclerViewBackground extends AppCompatActivity{
+public class SettingsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    //here we add elements
+    //sections as String
+    //Elements as new objects - instances of SettingsElement class
+    //you need to overwrite constructor to change name displayed in recycler
+    //start() method is executed in onClick so you need to overwrite it to execute
+    //your settings function
+    //Example below
+    private ArrayList<Object> getItemsList(){
+        ArrayList<Object> myList = new ArrayList<>();
+        myList.add("Task settings");
+        myList.add(new SettingsDatabaseSort(SettingsActivity.this,this));
+
+        return myList;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_view);
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        setContentView(R.layout.activity_settings_main);
+        mRecyclerView = findViewById(R.id.settings_main_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -37,14 +43,12 @@ public class RecyclerViewBackground extends AppCompatActivity{
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        DBHelper dbhelper = new DBHelper(RecyclerViewBackground.this);
         try {
-            mAdapter = new MyAdapter(dbhelper.getAll());
+            mAdapter = new SettingsActivityAdapter(getItemsList());
         } catch (Exception e){
-            Log.d("ADAPTER", "Exception catched" + e.getMessage() + " " + e.getCause());
+            Log.d("SETTINGS_SECTION", "Exception catched" + e.getMessage() + " " + e.getCause());
             finishActivity(0);
         }
         mRecyclerView.setAdapter(mAdapter);
     }
 }
-
