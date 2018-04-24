@@ -28,6 +28,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<Task> selectedItems = new ArrayList<>();
 
     private OnLongClickListener onLongClickListener;
+    private OnCheckListener onCheckListener;
     private int selectedPosition = -1;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -37,6 +38,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView mTextView;
         public TextView date;
         public CheckBox mStar;
+        public CheckBox mCheckBox;
         public CardView mView;
 
         public ViewHolder(CardView v) {
@@ -45,11 +47,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             mTextView = mView.findViewById(R.id.Rec_View_text1);
             date = mView.findViewById(R.id.Rec_View_date);
             mStar = mView.findViewById(R.id.priorityStar);
+            mCheckBox = mView.findViewById(R.id.Rec_View_checkbox);
         }
     }
 
     interface OnLongClickListener {
         void onClick(int position);
+    }
+
+    interface OnCheckListener {
+        void onCheck(int position);
     }
 
 
@@ -67,6 +74,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public void setOnLongClickListener(OnLongClickListener listener) {
         this.onLongClickListener = listener;
+    }
+
+    public void setOnCheckListener(OnCheckListener listener) {
+        this.onCheckListener = listener;
     }
 
     public void setSelectedPosition(int position) {
@@ -144,6 +155,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 }
             });
         }
+
+        holder.mCheckBox.setChecked(ListDataset.get(position).getStatus());
+        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(multiSelect || selectedPosition != -1) {
+                    holder.mCheckBox.setChecked(!holder.mCheckBox.isChecked());
+                }
+                else {
+                    if(onCheckListener != null) {
+                        holder.mCheckBox.setOnClickListener(null);
+                        onCheckListener.onCheck(holder.getAdapterPosition());
+                    }
+                }
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)

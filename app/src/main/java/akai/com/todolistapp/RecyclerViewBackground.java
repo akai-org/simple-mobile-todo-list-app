@@ -3,6 +3,7 @@ package akai.com.todolistapp;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
@@ -119,7 +120,23 @@ public class RecyclerViewBackground extends AppCompatActivity{
                 startSupportActionMode(itemActionModeCallback);
             }
         });
+        mAdapter.setOnCheckListener(new MyAdapter.OnCheckListener() {
+            @Override
+            public void onCheck(int position) {
+                final Task archivedTask = tasks.remove(position);
+                mAdapter.notifyItemRemoved(position);
+                Snackbar.make(findViewById(R.id.my_coordinator_layout), R.string.archived, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                insertTaskToList(archivedTask);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }).show();
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.getItemAnimator().setRemoveDuration(1000);
     }
 
     @Override

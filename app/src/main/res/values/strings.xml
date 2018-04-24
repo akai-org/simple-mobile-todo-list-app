@@ -10,4 +10,6 @@
     <string name="edit">Edit</string>
     <string name="ok">OK</string>
     <string name="delete_task_message">Selected task will be deleted.</string>
+    <string name="archived">Archived</string>
+    <string name="undo">Undo</string>
 </resources>
