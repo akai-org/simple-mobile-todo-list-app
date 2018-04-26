@@ -108,8 +108,6 @@ public class RecyclerViewBackground extends AppCompatActivity{
             tasks = dbhelper.getAll();
             mAdapter = new MyAdapter(this, tasks);
         } catch (Exception e){
-            //TODO
-            //I know, not very wise
             Log.d("ADAPTER", "Exception catched" + e.getMessage() + " " + e.getCause());
             finishActivity(0);
         }
