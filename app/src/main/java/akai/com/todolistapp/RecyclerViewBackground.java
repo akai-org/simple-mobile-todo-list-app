@@ -57,7 +57,7 @@ public class RecyclerViewBackground extends AppCompatActivity{
                     confirmFragment.setListener(new ConfirmFragment.DialogListener() {
                         @Override
                         public void onPositiveClick() {
-                            DeleteTask deleteTask = new DeleteTask(tasks.get(selectedPosition));
+                            DeleteTask deleteTask = new DeleteTask(tasks.get(selectedPosition), DeleteTask.DELETE);
                             deleteTask.execute();
                             tasks.remove(selectedPosition);
                             mode.finish();
@@ -105,7 +105,7 @@ public class RecyclerViewBackground extends AppCompatActivity{
         // specify an adapter (see also next example)
         DBHelper dbhelper = new DBHelper(RecyclerViewBackground.this);
         try {
-            tasks = dbhelper.getAll();
+            tasks = dbhelper.getNotDoneTasks();
             mAdapter = new MyAdapter(this, tasks);
         } catch (Exception e){
             Log.d("ADAPTER", "Exception catched" + e.getMessage() + " " + e.getCause());
@@ -122,11 +122,17 @@ public class RecyclerViewBackground extends AppCompatActivity{
             @Override
             public void onCheck(int position) {
                 final Task archivedTask = tasks.remove(position);
+                archivedTask.setStatus(!archivedTask.getStatus());
+                DeleteTask deleteTask = new DeleteTask(archivedTask, DeleteTask.UPDATE);
+                deleteTask.execute();
                 mAdapter.notifyItemRemoved(position);
                 Snackbar.make(findViewById(R.id.my_coordinator_layout), R.string.archived, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                archivedTask.setStatus(!archivedTask.getStatus());
+                                DeleteTask deleteTask = new DeleteTask(archivedTask, DeleteTask.UPDATE);
+                                deleteTask.execute();
                                 insertTaskToList(archivedTask);
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -220,6 +226,24 @@ public class RecyclerViewBackground extends AppCompatActivity{
     }
 
     private int compareTasks(Task task1, Task task2) {
+        int sortMode = (new DBHelper(this)).getSortmode();
+        if(sortMode == DBHelper.SORT_PRIORITY) {
+            int compByPr = compareTasksByPriority(task1, task2);
+            if(compByPr != 0){
+                return compByPr;
+            }
+            return compareTasksByDate(task1, task2);
+        }
+        else {
+            int compByDate = compareTasksByDate(task1, task2);
+            if(compByDate != 0) {
+                return compByDate;
+            }
+            return compareTasksByPriority(task1, task2);
+        }
+    }
+
+    private int compareTasksByPriority(Task task1, Task task2) {
         if(!task1.getPriority().equals(task2.getPriority())) {
             if(task1.getPriority()) {
                 return -1;
@@ -228,6 +252,10 @@ public class RecyclerViewBackground extends AppCompatActivity{
                 return 1;
             }
         }
+        return 0;
+    }
+
+    private int compareTasksByDate(Task task1, Task task2) {
         if(task1.getDate().get(Calendar.YEAR) > task2.getDate().get(Calendar.YEAR)) {
             return 1;
         }
@@ -251,25 +279,41 @@ public class RecyclerViewBackground extends AppCompatActivity{
 
     private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
 
+        public static final int DELETE = 0;
+        public static final int DELETE_ALL = 1;
+        public static final int UPDATE = 2;
+
         private List<Task> taskList;
         private Task task;
+        private int action;
 
         DeleteTask(List<Task> taskList) {
             this.taskList = taskList;
+            this.action = DELETE_ALL;
         }
 
-        DeleteTask(Task task) {
+        DeleteTask(Task task, int action) {
             this.task = task;
+            this.action = action;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             DBHelper dbHelper = new DBHelper(RecyclerViewBackground.this);
-            if(task == null) {
-                dbHelper.delete(taskList);
-            }
-            else {
-                dbHelper.delete(task);
+            switch (action) {
+                case DELETE:
+                    dbHelper.delete(task);
+                    break;
+                case DELETE_ALL:
+                    dbHelper.delete(taskList);
+                    break;
+                case UPDATE:
+                    try {
+                        dbHelper.update(task);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return false;
+                    }
             }
             return true;
         }
