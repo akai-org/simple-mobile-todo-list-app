@@ -73,4 +73,10 @@ public class Task implements Serializable {
         setStatus(status);
     }
 
+    public int daysToDeadline() {
+        Calendar today = Calendar.getInstance();
+        today = new GregorianCalendar(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        long diffInMillis = this.date.getTimeInMillis() - today.getTimeInMillis();
+        return (int) (diffInMillis / (1000*3600*24));
+    }
 }

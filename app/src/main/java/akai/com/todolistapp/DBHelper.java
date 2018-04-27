@@ -35,7 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static int sortmode = 0;
 
-    private static final int SORT_PRIORITY = 0, SORT_DATE = 1;
+    public static final int SORT_PRIORITY = 0, SORT_DATE = 1;
 
     public int getSortmode() {
         return sortmode;
@@ -70,7 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void add(Task c){
+    public int add(Task c){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -87,7 +87,13 @@ public class DBHelper extends SQLiteOpenHelper {
         else
             values.put(KEY_PRIORITY, 0);
         db.insert(TABLE_LIST, null, values);
+        String query = "SELECT MAX(" + KEY_ID + ") FROM " + TABLE_LIST;
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+        cursor.close();
         db.close();
+        return id;
     }
 
     public void update(Task updatedTask) throws Exception {
@@ -183,6 +189,43 @@ public class DBHelper extends SQLiteOpenHelper {
 
         cursor = db.rawQuery(selectQuery, null);
 
+        list = createTasksFromCursor(cursor);
+        db.close();
+        cursor.close();
+        return list;
+    }
+
+    public List<Task> getNotDoneTasks() throws Exception {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_LIST, null, KEY_BOOL + "=0",
+                null, null, null, orderByForQuery());
+        List<Task> list = createTasksFromCursor(cursor);
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    public List<Task> getDoneTasks() throws Exception {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_LIST, null, KEY_BOOL + "=1",
+                null, null, null, orderByForQuery());
+        List<Task> list = createTasksFromCursor(cursor);
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    private String orderByForQuery() {
+        if(sortmode == SORT_PRIORITY) {
+            return KEY_PRIORITY + " DESC, " + KEY_DATE;
+        }
+        else {
+            return KEY_DATE + ", " + KEY_PRIORITY + " DESC";
+        }
+    }
+
+    private List<Task> createTasksFromCursor(Cursor cursor) throws Exception {
+        List<Task> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
                 Task c = new Task(cursor.getString(1), strToCal(cursor.getString(2)),strToBool(cursor.getString(3)));
@@ -191,8 +234,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 list.add(c);
             } while (cursor.moveToNext());
         }
-        db.close();
-        cursor.close();
         return list;
     }
 

@@ -15,8 +15,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/task_name"
-            android:inputType="textMultiLine"
-            android:layout_weight="1"/>
+            android:inputType="text"
+            android:layout_weight="1"
+            android:imeOptions="actionDone"/>
 
         <CheckBox
             android:id="@+id/priorityCheckBox"
